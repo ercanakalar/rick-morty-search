@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SearchTermProps } from '../../utils/interfaces/search';
 import { AppDispatch } from '../../store';
 import { setSelectedData } from '../../store/slice/data/keep-selected-data';
+import { useEffect } from 'react';
 
 const SearchArea = (props: {
   selectedChildRef: React.RefObject<HTMLDivElement>;
@@ -17,6 +18,16 @@ const SearchArea = (props: {
   const selectedData = useSelector(
     (state: any) => state.keepSelectedData.selectedData
   );
+
+  useEffect(() => {
+    const deneme = localStorage.getItem('selectedData');
+    if (deneme) {
+      JSON.parse(deneme).map((item: SearchTermProps) => {
+        document.getElementById(item.id.toString())?.click();
+      });
+    }
+  }, [])
+
   return (
     <div ref={selectedChildRef} className='flex absolute'>
       {selectedData &&

@@ -11,8 +11,6 @@ export const getCharacterByName = createAsyncThunk(
 
       return response;
     } catch (error: any) {
-      console.log(error);
-      
       return rejectWithValue(error.response.data.error);
     }
   }

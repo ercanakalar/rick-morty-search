@@ -4,6 +4,7 @@ import SearchInput from '../../../components/search/search-input';
 import SearchSelect from '../../../components/search/search-select';
 import SearchArea from '../../../components/search/search-area';
 import { useSelector } from 'react-redux';
+import SelectByName from '../../../components/search/select-by-name';
 
 const CustomSelect = (props: any) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -35,19 +36,15 @@ const CustomSelect = (props: any) => {
         <div className='h-full'>
           <SearchArea selectedChildRef={selectedChildRef} />
           <SearchInput inputRef={inputRef} widthOfSelects={widthOfSelects} heightOfSelects={heightOfSelects} />
-          <button onClick={openHandler}>
+          {/* <button onClick={openHandler}>
             <img
               className='absolute top-2 right-3'
               src='/icons/caret-down-solid.svg'
               alt='arrow'
             />
           </button>
-          {/* {open && (
+          {open && (
             <SelectByName
-              searchTerm={searchTerm}
-              errors={errors}
-              options={searchResults}
-              selectData={selectData}
             />
           )} */}
         </div>

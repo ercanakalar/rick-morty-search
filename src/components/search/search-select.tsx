@@ -23,6 +23,7 @@ const SearchSelect = () => {
     event: ChangeEvent<HTMLInputElement>,
     option: SearchTermProps
   ) => {
+    event.preventDefault();
     option.isSelected = !option.isSelected;
     if (option.isSelected) {
       dispatch(setSelectedData({ type: 'add', payload: option }));
@@ -57,12 +58,36 @@ const SearchSelect = () => {
           };
         }
       );
-      selectedData.forEach((item: SearchTermProps) => {
-        document.getElementById(item.id.toString())?.click();
+      selectedData.map((item: SearchTermProps) => {
+        newResults.map((option: SearchTermProps) => {
+          if (item.id === option.id) {
+            option.isSelected = true;
+          }
+        });
       })
       setSearchResults(newResults);
     }
   }, [getCharactersByName]);
+
+  useEffect(() => {
+    localStorage.setItem('selectedData', JSON.stringify(selectedData));
+  }, [selectedData]);
+
+  useEffect(() => {
+    if (searchResults) {
+      const newResults = searchResults.map((option: SearchTermProps) => {
+        if (selectedData.length) {
+          selectedData.map((item: SearchTermProps) => {
+            if (item.id === option.id) {
+              option.isSelected = true;
+            }
+          });
+        }
+        return option;
+      });
+      setSearchResults(newResults);
+    }
+  }, [inputValue])
 
   if (error.length) {
     return <div className='text-red-500'>{error}</div>;
