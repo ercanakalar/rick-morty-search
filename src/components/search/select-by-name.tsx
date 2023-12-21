@@ -2,17 +2,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { SearchTermProps } from '../../utils/interfaces/search';
 import { AppDispatch } from '../../store';
 import { ChangeEvent, useEffect, useState } from 'react';
-import { getCharacterByName } from '../../libs/characters/get-by-name';
 import { setSelectedData } from '../../store/slice/data/keep-selected-data';
+import Loading from '../loading/loading';
 
 const SelectByName = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const [selects, setSelects] = useState<SearchTermProps[]>([]);
-
-  const inputValue = useSelector(
-    (state: any) => state.setInputValue.setInputValue
-  );
 
   const { getCharactersByName, error, loading } = useSelector(
     (state: {
@@ -23,10 +19,6 @@ const SelectByName = () => {
       };
     }) => state.getCharactersByName
   );
-
-  const fetch = async () => {
-    await dispatch(getCharacterByName(inputValue));
-  };
 
   const handleSearch = (
     event: ChangeEvent<HTMLInputElement>,
@@ -41,11 +33,50 @@ const SelectByName = () => {
     }
   };
 
-  useEffect(() => {
-    fetch();
-    setSelects(getCharactersByName.results);
-  }, [inputValue]);
+  const inputValue = useSelector(
+    (state: any) => state.keepSelectedData.inputValue
+  );
 
+  const selectedData = useSelector(
+    (state: any) => state.keepSelectedData.selectedData
+  );
+
+  useEffect(() => {
+    if (getCharactersByName.results) {
+      const newResults = getCharactersByName.results.map(
+        (option: {
+          id: number;
+          name: string;
+          image: string;
+          episode: string[];
+        }) => {
+          return {
+            id: option.id,
+            name: option.name,
+            character_image_url: option.image,
+            episode_number: option.episode.length,
+            isSelected: false,
+          };
+        }
+      );
+      console.log(selectedData);
+      
+      selectedData.map((item: SearchTermProps) => {
+        newResults.map((option: SearchTermProps) => {
+          if (item.id === option.id) {
+            option.isSelected = true;
+          }
+        });
+      });
+      setSelects(newResults);
+    }
+  }, [getCharactersByName]);
+
+  if (error.length) {
+    return <div className='text-red-500'>{error}</div>;
+  }
+
+  if (loading) return <Loading />;
 
   return (
     <div className='absolute w-full'>
@@ -58,7 +89,7 @@ const SelectByName = () => {
                 key={option.id + index.toString()}
               >
                 <div className='flex'>
-                <button
+                  <button
                     className='cursor-auto'
                     value={option.name}
                     id={option.id.toString()}

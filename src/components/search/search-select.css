@@ -1,0 +1,27 @@
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #fff;
+  border-radius: 4px;
+  scrollbar-arrow-color: white;
+}
+.list::-webkit-scrollbar {
+    width: 6px;
+}
+
+/* Track */
+.list::-webkit-scrollbar-track {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(123, 121, 121, 0.1);
+}
+
+/* Handle */
+.list::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: rgba(123, 121, 121, 0.8); 
+}

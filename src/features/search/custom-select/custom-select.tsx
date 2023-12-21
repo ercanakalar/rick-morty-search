@@ -29,24 +29,25 @@ const CustomSelect = (props: any) => {
     }
     inputRef.current?.focus();
   }, [selectedData]);
-  
+
   return (
     <div className='flex flex-col gap-2'>
-      <div className={`flex flex-col relative h-full`}>
+      <div className={`flex flex-col relative h-max`}>
         <div className='h-full'>
           <SearchArea selectedChildRef={selectedChildRef} />
-          <SearchInput inputRef={inputRef} widthOfSelects={widthOfSelects} heightOfSelects={heightOfSelects} />
-          {/* <button onClick={openHandler}>
+          <SearchInput
+            inputRef={inputRef}
+            widthOfSelects={widthOfSelects}
+            heightOfSelects={heightOfSelects}
+          />
+          <button onClick={openHandler}>
             <img
               className='absolute top-2 right-3'
               src='/icons/caret-down-solid.svg'
               alt='arrow'
             />
           </button>
-          {open && (
-            <SelectByName
-            />
-          )} */}
+          {open && <SelectByName />}
         </div>
       </div>
       <SearchSelect />

@@ -1,8 +1,12 @@
+import './search-select.css';
+
 import { ChangeEvent, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
 import { SearchTermProps } from '../../utils/interfaces/search';
 import { AppDispatch } from '../../store';
-import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedData } from '../../store/slice/data/keep-selected-data';
+import Loading from '../loading/loading';
 
 const SearchSelect = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -64,10 +68,10 @@ const SearchSelect = () => {
             option.isSelected = true;
           }
         });
-      })
+      });
       setSearchResults(newResults);
     }
-  }, [getCharactersByName]);
+  }, [getCharactersByName, selectedData]);
 
   useEffect(() => {
     localStorage.setItem('selectedData', JSON.stringify(selectedData));
@@ -87,67 +91,73 @@ const SearchSelect = () => {
       });
       setSearchResults(newResults);
     }
-  }, [inputValue])
+  }, [inputValue]);
 
   if (error.length) {
     return <div className='text-red-500'>{error}</div>;
   }
 
   if (loading) {
-    return <div className='text-blue-500'>Loading...</div>;
+    return <Loading />;
   }
 
   return (
-    <div>
-      <div>
-        {searchResults &&
-          searchResults.map((option: SearchTermProps, index: number) => {
-            return (
-              <div
-                className='flex items-center p-2 gap-2 border first:rounded-t-lg last:rounded-b-lg'
-                key={option.name + index.toString()}
-              >
-                <div className='flex'>
-                  <button
-                    className='cursor-auto'
-                    value={option.name}
-                    id={option.id.toString()}
-                    onClick={(event: any) => handleSearch(event, option)}
-                  >
-                    <input
-                      type='checkbox'
-                      checked={option.isSelected}
-                      onChange={() => {}}
-                    />
-                  </button>
-                </div>
-                <div className='flex'>
-                  <img
-                    className='h-8 w-8 rounded'
-                    src={option.character_image_url}
-                    alt={option.name}
+    <div className='h-72 overflow-y-auto list'>
+      {searchResults &&
+        searchResults.map((option: SearchTermProps, index: number) => {
+          return (
+            <div
+              className='flex items-center p-2 gap-2 border first:rounded-t-lg last:rounded-b-lg'
+              key={option.name + index.toString()}
+            >
+              <div className='flex'>
+                <button
+                  className='cursor-auto'
+                  value={option.name}
+                  id={option.id.toString()}
+                  onClick={(event: any) => handleSearch(event, option)}
+                >
+                  <input
+                    type='checkbox'
+                    checked={option.isSelected}
+                    onChange={() => {}}
                   />
-                </div>
-
-                <div className='flex flex-col'>
-                  {option.name
-                    .toLowerCase()
-                    .includes(inputValue.toLowerCase()) && (
-                    <label
-                      className='text-xs font-bold'
-                      htmlFor={option.id.toString()}
-                    >
-                      {option.name}
-                    </label>
-                  )}
-                  <p className='text-xs text-[#62748A]'>
-                    {option.episode_number} Episodes
-                  </p>
-                </div>
+                </button>
               </div>
-            );
-          })}
-      </div>
+              <div className='flex'>
+                <img
+                  className='h-8 w-8 rounded'
+                  src={option.character_image_url}
+                  alt={option.name}
+                />
+              </div>
+
+              <div className='flex flex-col'>
+                {option.name
+                  .toLowerCase()
+                  .includes(inputValue.toLowerCase()) && (
+                  <label
+                    className='flex text-xs'
+                    htmlFor={option.id.toString()}
+                  >
+                    {option.name
+                      .split('')
+                      .map((letter: string, index: number) => (
+                        inputValue.toLowerCase().includes(letter.toLowerCase()) ? (
+                          <b className='font-bold' key={index}>{letter}</b>
+                        ) : (
+                          <p key={index}>{letter}</p>
+                        )
+                      ))}
+                  </label>
+                )}
+                <p className='text-xs text-[#62748A]'>
+                  {option.episode_number} Episodes
+                </p>
+              </div>
+            </div>
+          );
+        })}
     </div>
   );
 };
