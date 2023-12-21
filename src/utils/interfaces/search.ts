@@ -5,7 +5,7 @@ export interface SearchTermProps {
   name: string;
   episode_number: number;
   character_image_url: string;
-  isSelected?: boolean;
+  isSelected: boolean;
 }
 
 export interface SearchInputProps {

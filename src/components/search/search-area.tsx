@@ -1,16 +1,26 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { SearchTermProps } from '../../utils/interfaces/search';
+import { AppDispatch } from '../../store';
+import { setSelectedData } from '../../store/slice/data/keep-selected-data';
 
 const SearchArea = (props: {
-  selectedChildRef?: React.RefObject<HTMLDivElement>;
-  selectedResult: SearchTermProps[];
-  filterSelected: (item: SearchTermProps) => void;
+  selectedChildRef: React.RefObject<HTMLDivElement>;
 }) => {
-  const { selectedChildRef, selectedResult, filterSelected } = props;
-  
+  const { selectedChildRef } = props;
+  const dispatch = useDispatch<AppDispatch>();
+
+  const filterSelected = (option: SearchTermProps) => {
+    dispatch(setSelectedData({ type: 'remove', payload: option }));
+    document.getElementById(option.id.toString())?.click();
+  };
+
+  const selectedData = useSelector(
+    (state: any) => state.keepSelectedData.selectedData
+  );
   return (
     <div ref={selectedChildRef} className='flex absolute'>
-      {selectedResult &&
-        selectedResult.map((item: SearchTermProps, index: number) => {
+      {selectedData &&
+        selectedData.map((item: SearchTermProps, index: number) => {
           return (
             <div
               key={index}
