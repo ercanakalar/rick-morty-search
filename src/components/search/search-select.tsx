@@ -39,6 +39,7 @@ const SearchSelect = (props: {
             name: item.name,
             episode_number: item.episode.length,
             character_image_url: item.image,
+            isSelected: false,
           },
         ]);
       }
@@ -47,6 +48,29 @@ const SearchSelect = (props: {
 
   useEffect(() => {
     fetch();
+    const searched = localStorage.getItem('selectedResult');
+    if (searched) {
+      const result = JSON.parse(searched);
+      result.forEach((item: SearchTermProps) => {
+        if (
+          item.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
+          item.isSelected
+        ) {
+          setSearchResults((prev) => [
+            ...prev,
+            {
+              id: item.id,
+              name: item.name,
+              episode_number: item.episode_number,
+              character_image_url: item.character_image_url,
+              isSelected: true,
+            },
+          ]);
+        }
+      });
+    }
+
+    console.log(searchResults);
   }, [searchTerm]);
 
   if (errors.length > 0) {
@@ -68,13 +92,14 @@ const SearchSelect = (props: {
                 key={option.name + index.toString()}
               >
                 <div className='flex'>
-                  <input
-                    ref={selectRef}
-                    type='checkbox'
+                  <button
+                    className='cursor-none'
                     value={option.name}
                     id={option.id.toString()}
-                    onChange={(event) => selectData(event, option)}
-                  />
+                    onClick={(event: any) => selectData(event, option)}
+                  >
+                    <input type='checkbox' checked={option.isSelected} />
+                  </button>
                 </div>
                 <div className='flex'>
                   <img

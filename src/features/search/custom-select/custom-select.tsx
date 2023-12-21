@@ -5,6 +5,7 @@ import SearchSelect from '../../../components/search/search-select';
 import SearchArea from '../../../components/search/search-area';
 
 import { SearchTermProps } from '../../../utils/interfaces/search';
+
 const CustomSelect = (props: any) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedResult, setSelectedResult] = useState<Array<SearchTermProps>>(
@@ -17,8 +18,6 @@ const CustomSelect = (props: any) => {
   const selectedChildRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  
-
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setSearchTerm(event.target.value);
@@ -26,23 +25,13 @@ const CustomSelect = (props: any) => {
 
   const selectData = (
     event: ChangeEvent<HTMLInputElement>,
-    option: SearchTermProps,
+    option: SearchTermProps
   ) => {
-    if (event.target.checked) {
-      setSelectedResult((prev: SearchTermProps[]) => [
-        ...prev,
-        {
-          id: option.id,
-          name: option.name,
-          character_image_url: option.character_image_url,
-          episode_number: option.episode_number,
-          isSelected: false,
-        },
-      ]);
+    option.isSelected = !option.isSelected;
+    if (option.isSelected) {
+      setSelectedResult((prev) => [...prev, option]);
     } else {
-      setSelectedResult((prev: SearchTermProps[]) =>
-        prev.filter((item: SearchTermProps) => item.id !== option.id)
-      );
+      setSelectedResult((prev) => prev.filter((item) => item.id !== option.id));
     }
   };
 
@@ -63,7 +52,9 @@ const CustomSelect = (props: any) => {
     inputRef.current?.focus();
   }, [selectedResult]);
 
-  
+  useEffect(() => {
+    localStorage.setItem('selectedResult', JSON.stringify(selectedResult));
+  }, [selectedResult]);
 
   return (
     <div className='flex flex-col gap-2'>
