@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+
 import { getCharacterByName } from '../../../libs/characters/get-by-name';
 
 const initialState: { loading: boolean; getCharactersByName: any; error: any } =

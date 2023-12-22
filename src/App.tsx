@@ -1,4 +1,3 @@
-import React from 'react';
 import CustomSelect from './features/search/custom-select/custom-select';
 
 function App() {

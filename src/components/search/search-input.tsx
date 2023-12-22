@@ -4,6 +4,7 @@ import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
 import { getCharacterByName } from '../../libs/characters/get-by-name';
 import { setInputValue } from '../../store/slice/data/keep-selected-data';
+import { useDebouncedEffect } from '../../hooks/useDebounce';
 
 const SearchInput = (props: {
   inputRef: any;
@@ -16,10 +17,14 @@ const SearchInput = (props: {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
+
     event.preventDefault();
     setSearchTerm(event.target.value);
     dispatch(setInputValue(event.target.value));
   };
+
+  const debouncedSearch = useDebouncedEffect(searchTerm, 1000);
+
 
   const fetch = async () => {
     await dispatch(getCharacterByName(searchTerm));
@@ -27,9 +32,11 @@ const SearchInput = (props: {
 
   useEffect(() => {
     fetch();
-  }, [searchTerm]);
+  }, [debouncedSearch]);
+
 
   useEffect(() => {
+    // TODO: Blow code is added to show how to use useRef
     if (inputRef?.current) {
       inputRef.current.style.paddingLeft = `${widthOfSelects!}px`;
       inputRef.current.style.height = heightOfSelects

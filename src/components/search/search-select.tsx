@@ -1,6 +1,6 @@
 import './search-select.css';
 
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, Suspense, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { SearchTermProps } from '../../utils/interfaces/search';
@@ -97,9 +97,26 @@ const SearchSelect = () => {
     return <div className='text-red-500'>{error}</div>;
   }
 
-  if (loading) {
-    return <Loading />;
-  }
+  const haveLetter = (option: SearchTermProps) => {
+    if (!inputValue) return true;
+    return option.name
+      .split('')
+      .some((letter: string) =>
+        inputValue.toLowerCase().includes(letter.toLowerCase())
+      );
+  };
+
+  const checkLetter = (option: SearchTermProps) => {
+    return option.name.split('').map((letter: string, index: number) =>
+      inputValue.toLowerCase().includes(letter.toLowerCase()) ? (
+        <b className='font-bold' key={index}>
+          {letter}
+        </b>
+      ) : (
+        <p key={index}>{letter}</p>
+      )
+    );
+  };
 
   return (
     <div className='h-72 overflow-y-auto list'>
@@ -117,11 +134,7 @@ const SearchSelect = () => {
                   id={option.id.toString()}
                   onClick={(event: any) => handleSearch(event, option)}
                 >
-                  <input
-                    type='checkbox'
-                    checked={option.isSelected}
-                    onChange={() => {}}
-                  />
+                  <input type='checkbox' checked={option.isSelected} />
                 </button>
               </div>
               <div className='flex'>
@@ -131,30 +144,21 @@ const SearchSelect = () => {
                   alt={option.name}
                 />
               </div>
-
-              <div className='flex flex-col'>
-                {option.name
-                  .toLowerCase()
-                  .includes(inputValue.toLowerCase()) && (
-                  <label
-                    className='flex text-xs'
-                    htmlFor={option.id.toString()}
-                  >
-                    {option.name
-                      .split('')
-                      .map((letter: string, index: number) => (
-                        inputValue.toLowerCase().includes(letter.toLowerCase()) ? (
-                          <b className='font-bold' key={index}>{letter}</b>
-                        ) : (
-                          <p key={index}>{letter}</p>
-                        )
-                      ))}
-                  </label>
-                )}
-                <p className='text-xs text-[#62748A]'>
-                  {option.episode_number} Episodes
-                </p>
-              </div>
+              <Suspense fallback={<Loading/>} key={index}>
+                <div className='flex flex-col'>
+                  {haveLetter(option) && (
+                    <label
+                      className='flex text-xs'
+                      htmlFor={option.id.toString()}
+                    >
+                      {checkLetter(option)}
+                    </label>
+                  )}
+                  <p className='text-xs text-[#62748A]'>
+                    {option.episode_number} Episodes
+                  </p>
+                </div>
+              </Suspense>
             </div>
           );
         })}

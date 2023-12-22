@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import SearchInput from '../../../components/search/search-input';
 import SearchSelect from '../../../components/search/search-select';
 import SearchArea from '../../../components/search/search-area';
-import { useSelector } from 'react-redux';
 import SelectByName from '../../../components/search/select-by-name';
 
 const CustomSelect = (props: any) => {

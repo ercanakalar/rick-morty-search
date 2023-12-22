@@ -1,7 +1,8 @@
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 import { SearchTermProps } from '../../utils/interfaces/search';
 import { AppDispatch } from '../../store';
-import { ChangeEvent, useEffect, useState } from 'react';
 import { setSelectedData } from '../../store/slice/data/keep-selected-data';
 import Loading from '../loading/loading';
 
@@ -41,6 +42,14 @@ const SelectByName = () => {
     (state: any) => state.keepSelectedData.selectedData
   );
 
+  const names = (option: SearchTermProps) => {
+    return option.name.toLowerCase().includes(inputValue.toLowerCase()) && (
+      <label className='text-xs' htmlFor={option.id.toString()}>
+        {option.name}
+      </label>
+    );
+  };
+
   useEffect(() => {
     if (getCharactersByName.results) {
       const newResults = getCharactersByName.results.map(
@@ -60,7 +69,7 @@ const SelectByName = () => {
         }
       );
       console.log(selectedData);
-      
+
       selectedData.map((item: SearchTermProps) => {
         newResults.map((option: SearchTermProps) => {
           if (item.id === option.id) {
@@ -75,8 +84,6 @@ const SelectByName = () => {
   if (error.length) {
     return <div className='text-red-500'>{error}</div>;
   }
-
-  if (loading) return <Loading />;
 
   return (
     <div className='absolute w-full'>
@@ -95,22 +102,12 @@ const SelectByName = () => {
                     id={option.id.toString()}
                     onClick={(event: any) => handleSearch(event, option)}
                   >
-                    <input
-                      type='checkbox'
-                      checked={option.isSelected}
-                      onChange={() => {}}
-                    />
+                    <input type='checkbox' checked={option.isSelected} />
                   </button>
                 </div>
 
                 <div className='flex flex-col'>
-                  {option.name
-                    .toLowerCase()
-                    .includes(inputValue.toLowerCase()) && (
-                    <label className='text-xs' htmlFor={option.id.toString()}>
-                      {option.name}
-                    </label>
-                  )}
+                  {names(option)}
                 </div>
               </div>
             );
