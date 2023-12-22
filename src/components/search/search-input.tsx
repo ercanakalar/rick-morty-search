@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, startTransition, useEffect, useState, useTransition } from 'react';
 
 import { AppDispatch } from '../../store';
 import { useDispatch } from 'react-redux';
@@ -17,13 +17,15 @@ const SearchInput = (props: {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleSearch = (event: ChangeEvent<HTMLInputElement>) => {
-
     event.preventDefault();
-    setSearchTerm(event.target.value);
-    dispatch(setInputValue(event.target.value));
+    startTransition(() => {
+      localStorage.setItem('transition', 'true');
+      setSearchTerm(event.target.value);
+      dispatch(setInputValue(event.target.value));
+    })
   };
 
-  const debouncedSearch = useDebouncedEffect(searchTerm, 1000);
+  const debouncedSearch = useDebouncedEffect(searchTerm, 500);
 
 
   const fetch = async () => {

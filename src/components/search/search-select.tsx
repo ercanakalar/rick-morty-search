@@ -107,13 +107,17 @@ const SearchSelect = () => {
   };
 
   const checkLetter = (option: SearchTermProps) => {
-    return option.name.split('').map((letter: string, index: number) =>
-      inputValue.toLowerCase().includes(letter.toLowerCase()) ? (
-        <b className='font-bold' key={index}>
-          {letter}
-        </b>
-      ) : (
-        <p key={index}>{letter}</p>
+    if (!inputValue) return option.name;
+    return option.name.split(' ').map((word: string, index: number) =>
+      word.split('').map((letter: string) =>
+        word.toLowerCase().includes(inputValue.toLowerCase()) &&
+        inputValue.toLowerCase().includes(letter.toLowerCase()) ? (
+          <b className='font-bold' key={index}>
+            {letter}
+          </b>
+        ) : (
+          <p key={index}>{letter}</p>
+        )
       )
     );
   };
@@ -144,7 +148,7 @@ const SearchSelect = () => {
                   alt={option.name}
                 />
               </div>
-              <Suspense fallback={<Loading/>} key={index}>
+              <Suspense fallback={<Loading />} key={index}>
                 <div className='flex flex-col'>
                   {haveLetter(option) && (
                     <label
